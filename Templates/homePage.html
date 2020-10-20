@@ -1,0 +1,83 @@
+<html>
+<head>
+    <title>Youtube Video Downloader</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .centerBox{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+            width:500px;
+            text-align: center;
+       }
+    </style>
+</head>
+<body>
+<div class="centerBox  border border-info rounded ">
+        <h5 class="bg-info text-white p-4">Youtube Video Downloader</h5>
+        <form method="post" action="getUrl" class="form-inline justify-content-center">
+            {% csrf_token %}
+             <div class="form-group">
+                <input type="text" name="urlLink" class="form-control m-2">
+                <input type="submit" name="urlSubmit" class="btn btn-info m-2">
+             </div>
+        </form>
+        {% if request.POST %}
+            <img src={{thumb}} width="300px" height="200px"> <br/>
+             <div class="container text-left p-4">
+                  <div class="row">
+                    <div class="col">Video URL: </div>
+                    <div class="col">{{link}}</div>
+                        <div class="w-100"></div>
+                    <div class="col">Video Title: </div>
+                    <div class="col">{{title}}</div>
+                      <div class="w-100"></div>
+                    <div class="col">Video Size: </div>
+                    <div class="col">{{fileSize}}</div>
+                        <div class="w-100"></div>
+                    <div class="col">Number Of views:</div>
+                    <div class="col"> {{views}}</div>
+                      <div class="w-100"></div>
+                    <div class="col">Length of Video: </div>
+                    <div class="col">{{length}}</div>
+                        <div class="w-100"></div>
+                    <div class="col">Video Rating: </div>
+                    <div class="col">{{rating}}</div>
+                  </div>
+             </div>
+            <button onclick="download()" class="btn btn-info m-2">Download</button>
+        {% endif %}
+    <script>
+        function download() {
+            $.ajax({
+                url: 'download', //The URL you defined in urls.py
+                success: function(data) {
+                  $(document).ready(function(){
+                        $('.toast').toast('show');
+                   });
+                }
+
+            });
+        }
+    </script>
+</div>
+<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+        <div class="toast m-4" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+              <div class="toast-header">
+                <strong class="mr-auto text-info">Downloads</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="toast-body">
+                Video Downloaded Successfully :)
+              </div>
+        </div>
+</div>
+</body>
+</html>
