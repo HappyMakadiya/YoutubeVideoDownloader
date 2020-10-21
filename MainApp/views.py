@@ -4,8 +4,19 @@ from hurry.filesize import size, alternative
 from pytube import YouTube
 from tkinter import filedialog
 import tkinter as tk
+import math
+
 link = ""
 folder_name = ""
+millnames = ['', ' Thousand', ' Million', ' Billion', ' Trillion']
+
+
+def millify(n):
+    n = float(n)
+    millidx = max(0, min(len(millnames) - 1,
+                         int(math.floor(0 if n == 0 else math.log10(abs(n)) / 3))))
+
+    return '{:.0f}{}'.format(n / 10 ** (3 * millidx), millnames[millidx])
 
 
 def openWindow():
@@ -27,7 +38,9 @@ def getUrl(request):
     yt = YouTube(link)
     steam = yt.streams[1]
     filesize = size(steam.filesize, system=alternative)
-    return render(request, 'homePage.html', {'link': link, 'fileSize': filesize, 'title': yt.title, 'views': yt.views, 'length': yt.length, 'rating': yt.rating, 'thumb': yt.thumbnail_url})
+    return render(request, 'homePage.html',
+                  {'link': link, 'fileSize': filesize, 'title': yt.title, 'views': millify(yt.views), 'length': yt.length,
+                   'rating': yt.rating, 'thumb': yt.thumbnail_url})
 
 
 def download(request):
@@ -37,5 +50,3 @@ def download(request):
     url.download(folder_name)
     done = True
     return HttpResponse('Return data to ajax call')
-
-
